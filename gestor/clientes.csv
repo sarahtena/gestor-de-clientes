@@ -1,0 +1,48 @@
+import csv
+
+class Cliente:
+    def __init__(self, dni, nombre, apellido):
+        self.dni = dni
+        self.nombre = nombre
+        self.apellido = apellido
+
+class Clientes:
+    lista = []
+
+    # Load data from the CSV file
+    with open("clientes.csv", newline="\n") as fichero:
+        reader = csv.reader(fichero, delimiter=";")
+        for dni, nombre, apellido in reader:
+            cliente = Cliente(dni, nombre, apellido)
+            lista.append(cliente)
+
+    @staticmethod
+    def guardar():
+        with open("clientes.csv", "w", newline="\n") as fichero:
+            writer = csv.writer(fichero, delimiter=";")
+            for c in Clientes.lista:
+                writer.writerow((c.dni, c.nombre, c.apellido))
+
+    @staticmethod
+    def crear(dni, nombre, apellido):
+        cliente = Cliente(dni, nombre, apellido)
+        Clientes.lista.append(cliente)
+        Clientes.guardar()  # Save changes to the file
+        return cliente
+
+    @staticmethod
+    def modificar(dni, nombre, apellido):
+        for i, cliente in enumerate(Clientes.lista):
+            if cliente.dni == dni:
+                Clientes.lista[i].nombre = nombre
+                Clientes.lista[i].apellido = apellido
+                Clientes.guardar()  # Save changes to the file
+                return Clientes.lista[i]
+
+    @staticmethod
+    def borrar(dni):
+        for i, cliente in enumerate(Clientes.lista):
+            if cliente.dni == dni:
+                cliente = Clientes.lista.pop(i)
+                Clientes.guardar()  # Save changes to the file
+                return cliente
